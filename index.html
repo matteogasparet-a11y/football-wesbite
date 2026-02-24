@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>KICKOFF — Global Football</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --green: #00C853;
+      --dark: #0a0a0a;
+      --mid: #141414;
+      --card: #1a1a1a;
+      --border: #2a2a2a;
+      --text: #e8e8e8;
+      --muted: #888;
+      --accent: #FFD600;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Barlow', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 100;
+      background: rgba(10,10,10,0.9);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 2rem; height: 60px;
+    }
+    .logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      letter-spacing: 3px;
+      color: var(--green);
+    }
+    .logo span { color: var(--accent); }
+    .nav-links { display: flex; gap: 2rem; list-style: none; }
+    .nav-links a {
+      color: var(--muted); text-decoration: none;
+      font-weight: 600; font-size: 0.85rem; letter-spacing: 1px; text-transform: uppercase;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--green); }
+    .nav-cta {
+      background: var(--green); color: #000;
+      border: none; padding: 0.5rem 1.2rem;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 700; font-size: 0.8rem;
+      letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: background 0.2s;
+    }
+    .nav-cta:hover { background: var(--accent); }
+
+    /* PAGE SECTIONS */
+    section { display: none; padding: 80px 2rem 2rem; min-height: 100vh; }
+    section.active { display: block; }
+
+    /* HERO */
+    .hero {
+      position: relative; overflow: hidden;
+      min-height: 100vh;
+      display: flex; flex-direction: column; justify-content: center;
+      padding: 80px 2rem 2rem;
+    }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 70% 50%, rgba(0,200,83,0.08) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 20% 80%, rgba(255,214,0,0.05) 0%, transparent 60%);
+    }
+    .hero-pitch {
+      position: absolute; right: -100px; top: 50%; transform: translateY(-50%);
+      width: 600px; height: 600px; opacity: 0.04;
+      border: 2px solid var(--green);
+      border-radius: 50%;
+    }
+    .hero-pitch::after {
+      content: ''; position: absolute; inset: 30px;
+      border: 2px solid var(--green); border-radius: 50%;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 800px; }
+    .hero-tag {
+      display: inline-block;
+      background: var(--green); color: #000;
+      font-size: 0.75rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      padding: 0.3rem 0.8rem; margin-bottom: 1.5rem;
+      animation: fadeUp 0.6s ease both;
+    }
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(4rem, 12vw, 9rem);
+      line-height: 0.9;
+      letter-spacing: 2px;
+      animation: fadeUp 0.7s 0.1s ease both;
+    }
+    .hero h1 em { color: var(--green); font-style: normal; }
+    .hero p {
+      margin-top: 1.5rem; font-size: 1.1rem;
+      color: var(--muted); max-width: 500px; line-height: 1.6;
+      animation: fadeUp 0.7s 0.2s ease both;
+    }
+    .hero-btns {
+      display: flex; gap: 1rem; margin-top: 2rem;
+      animation: fadeUp 0.7s 0.3s ease both;
+    }
+    .btn-primary {
+      background: var(--green); color: #000;
+      border: none; padding: 0.8rem 2rem;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 700; font-size: 0.9rem;
+      letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+    .btn-outline {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--border); padding: 0.8rem 2rem;
+      font-family: 'Barlow', sans-serif;
+      font-weight: 600; font-size: 0.9rem;
+      letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--green); color: var(--green); }
+
+    /* TICKER */
+    .ticker {
+      background: var(--green); color: #000;
+      overflow: hidden; white-space: nowrap;
+      padding: 0.5rem 0; font-weight: 700; font-size: 0.85rem;
+      letter-spacing: 1px;
+      animation: fadeUp 0.7s 0.4s ease both;
+      margin-top: 3rem;
+    }
+    .ticker-inner {
+      display: inline-block;
+      animation: ticker 30s linear infinite;
+    }
+    .ticker-inner span { margin: 0 3rem; }
+    @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+    /* SECTION HEADER */
+    .sec-header {
+      display: flex; align-items: baseline; gap: 1rem;
+      margin-bottom: 2rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem;
+    }
+    .sec-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.5rem; letter-spacing: 2px;
+    }
+    .sec-header span {
+      color: var(--green); font-size: 0.8rem;
+      font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+    }
+
+    /* NEWS GRID */
+    .news-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      grid-template-rows: auto auto;
+      gap: 1.5rem;
+    }
+    .news-card {
+      background: var(--card); border: 1px solid var(--border);
+      overflow: hidden; cursor: pointer;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .news-card:hover { border-color: var(--green); transform: translateY(-3px); }
+    .news-card.featured { grid-row: span 2; }
+    .news-img {
+      width: 100%; aspect-ratio: 16/9;
+      background: linear-gradient(135deg, #1e3a2a 0%, #0d1f15 100%);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 4rem; color: rgba(255,255,255,0.1);
+      position: relative; overflow: hidden;
+    }
+    .news-card.featured .news-img { aspect-ratio: 4/3; font-size: 7rem; }
+    .news-img::after {
+      content: ''; position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, transparent 60%);
+    }
+    .news-category {
+      position: absolute; top: 1rem; left: 1rem; z-index: 1;
+      background: var(--green); color: #000;
+      font-size: 0.7rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 0.2rem 0.6rem;
+    }
+    .news-body { padding: 1rem; }
+    .news-meta { color: var(--muted); font-size: 0.75rem; margin-bottom: 0.5rem; }
+    .news-title {
+      font-weight: 700; line-height: 1.3;
+      font-size: 1rem;
+    }
+    .news-card.featured .news-title { font-size: 1.3rem; }
+    .news-excerpt { color: var(--muted); font-size: 0.85rem; margin-top: 0.5rem; line-height: 1.5; }
+
+    /* ALSO READ */
+    .also-read { margin-top: 2rem; }
+    .also-read h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.4rem; letter-spacing: 2px;
+      margin-bottom: 1rem; color: var(--muted);
+    }
+    .article-list { display: flex; flex-direction: column; gap: 0.8rem; }
+    .article-item {
+      display: flex; gap: 1rem; align-items: center;
+      padding: 0.8rem; background: var(--card);
+      border: 1px solid var(--border); cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .article-item:hover { border-color: var(--green); }
+    .article-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; color: var(--border); line-height: 1;
+      min-width: 2rem; text-align: center;
+    }
+    .article-info { flex: 1; }
+    .article-info small { color: var(--muted); font-size: 0.75rem; }
+    .article-info p { font-weight: 600; font-size: 0.9rem; margin-top: 0.2rem; }
+
+    /* TEAMS */
+    .teams-intro { color: var(--muted); margin-bottom: 2rem; font-size: 1rem; }
+    .league-filter {
+      display: flex; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 2rem;
+    }
+    .filter-btn {
+      background: var(--card); border: 1px solid var(--border);
+      color: var(--muted); padding: 0.4rem 1rem;
+      font-family: 'Barlow', sans-serif;
+      font-size: 0.8rem; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer; transition: all 0.2s;
+    }
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--green); border-color: var(--green); color: #000;
+    }
+    .teams-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 1rem;
+    }
+    .team-card {
+      background: var(--card); border: 1px solid var(--border);
+      padding: 1.5rem; text-align: center; cursor: pointer;
+      transition: all 0.2s; position: relative; overflow: hidden;
+    }
+    .team-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0;
+      height: 3px; background: var(--team-color, var(--green));
+      transform: scaleX(0); transition: transform 0.3s;
+    }
+    .team-card:hover { border-color: var(--green); transform: translateY(-4px); }
+    .team-card:hover::before { transform: scaleX(1); }
+    .team-badge {
+      font-size: 3.5rem; margin-bottom: 0.8rem; display: block;
+    }
+    .team-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem; letter-spacing: 1px;
+    }
+    .team-league {
+      color: var(--muted); font-size: 0.75rem;
+      letter-spacing: 1px; text-transform: uppercase; margin-top: 0.3rem;
+    }
+    .team-stats {
+      display: flex; justify-content: center; gap: 1.5rem;
+      margin-top: 1rem; padding-top: 1rem; border-top: 1px solid var(--border);
+    }
+    .team-stat small { color: var(--muted); font-size: 0.7rem; display: block; }
+    .team-stat strong { font-size: 1.1rem; font-weight: 700; }
+
+    /* MODAL */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0; z-index: 200;
+      background: rgba(0,0,0,0.85); backdrop-filter: blur(6px);
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      background: var(--mid); border: 1px solid var(--border);
+      max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto;
+      animation: modalIn 0.3s ease;
+    }
+    @keyframes modalIn { from { opacity:0; transform: scale(0.95); } to { opacity:1; transform: scale(1); } }
+    .modal-header {
+      display: flex; align-items: center; gap: 1rem;
+      padding: 1.5rem; border-bottom: 1px solid var(--border);
+    }
+    .modal-badge { font-size: 3rem; }
+    .modal-header h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem; letter-spacing: 2px;
+    }
+    .modal-header small { color: var(--green); font-size: 0.8rem; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; }
+    .modal-close {
+      margin-left: auto; background: none; border: 1px solid var(--border);
+      color: var(--muted); width: 36px; height: 36px;
+      font-size: 1.2rem; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: all 0.2s;
+    }
+    .modal-close:hover { border-color: var(--green); color: var(--text); }
+    .modal-body { padding: 1.5rem; }
+    .modal-stats {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 1rem; margin-bottom: 1.5rem;
+    }
+    .modal-stat {
+      background: var(--card); border: 1px solid var(--border);
+      padding: 1rem; text-align: center;
+    }
+    .modal-stat strong { display: block; font-size: 2rem; font-family: 'Bebas Neue'; color: var(--green); }
+    .modal-stat small { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; }
+    .modal-body h3 { font-family: 'Bebas Neue'; font-size: 1.3rem; letter-spacing: 1px; margin-bottom: 0.8rem; color: var(--muted); }
+    .player-list { display: flex; flex-direction: column; gap: 0.5rem; }
+    .player-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 0.5rem 0.8rem; background: var(--card); font-size: 0.9rem;
+    }
+    .player-pos { color: var(--green); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; min-width: 30px; }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      .news-grid { grid-template-columns: 1fr; }
+      .news-card.featured { grid-row: span 1; }
+      .hero h1 { font-size: 4rem; }
+      nav { padding: 0 1rem; }
+      .nav-links { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">KICK<span>OFF</span></div>
+  <ul class="nav-links">
+    <li><a href="#" class="active" onclick="showSection('home',this)">Home</a></li>
+    <li><a href="#" onclick="showSection('news',this)">News</a></li>
+    <li><a href="#" onclick="showSection('teams',this)">Teams</a></li>
+  </ul>
+  <button class="nav-cta">Subscribe</button>
+</nav>
+
+<!-- HOME -->
+<section id="home" class="active" style="padding:0;">
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-pitch"></div>
+    <div class="hero-content">
+      <div class="hero-tag">⚽ Live Coverage · Global Football</div>
+      <h1>THE WORLD<br>PLAYS <em>HERE</em></h1>
+      <p>Breaking news, in-depth analysis, and complete team coverage from every major league on the planet.</p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="showSection('news', document.querySelector('.nav-links a:nth-child(2) a'))">Latest News</button>
+        <button class="btn-outline" onclick="showSection('teams', null)">Explore Teams</button>
+      </div>
+    </div>
+    <div class="ticker">
+      <div class="ticker-inner">
+        <span>⚽ MANCHESTER CITY 3–1 ARSENAL</span>
+        <span>🔴 BARCELONA SIGN NEW STRIKER FOR €80M</span>
+        <span>🏆 CHAMPIONS LEAGUE DRAW CONFIRMED</span>
+        <span>💛 BRAZIL APPOINT NEW HEAD COACH</span>
+        <span>📋 PREMIER LEAGUE ANNOUNCES RECORD TV DEAL</span>
+        <span>⚽ REAL MADRID EXTEND BELLINGHAM CONTRACT</span>
+        <span>🔴 LIVERPOOL TOP OF THE TABLE AFTER MATCHDAY 28</span>
+        <span>⚽ MANCHESTER CITY 3–1 ARSENAL</span>
+        <span>🔴 BARCELONA SIGN NEW STRIKER FOR €80M</span>
+        <span>🏆 CHAMPIONS LEAGUE DRAW CONFIRMED</span>
+        <span>💛 BRAZIL APPOINT NEW HEAD COACH</span>
+        <span>📋 PREMIER LEAGUE ANNOUNCES RECORD TV DEAL</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- NEWS -->
+<section id="news">
+  <div class="sec-header">
+    <h2>Latest News</h2>
+    <span>Updated Daily</span>
+  </div>
+
+  <div class="news-grid">
+    <!-- FEATURED -->
+    <div class="news-card featured">
+      <div class="news-img" style="background: linear-gradient(135deg,#1a2e1a,#0d1a0d);">
+        <span>⚽</span>
+        <div class="news-category">Breaking</div>
+      </div>
+      <div class="news-body">
+        <div class="news-meta">Feb 24, 2026 · Champions League</div>
+        <div class="news-title">Real Madrid Crush Bayern 4–1 in Stunning Quarter-Final First Leg</div>
+        <div class="news-excerpt">In a dominant display at the Bernabéu, Kylian Mbappé scored twice as Real Madrid dismantled a hapless Bayern Munich side to take a commanding lead ahead of the second leg in Germany.</div>
+      </div>
+    </div>
+
+    <!-- SMALL CARDS -->
+    <div class="news-card">
+      <div class="news-img" style="background: linear-gradient(135deg,#1a1a2e,#0d0d1a); font-size: 2.5rem;">🏴󠁧󠁢󠁥󠁮󠁧󠁿
+        <div class="news-category">Premier League</div>
+      </div>
+      <div class="news-body">
+        <div class="news-meta">Feb 24, 2026 · Premier League</div>
+        <div class="news-title">Liverpool Go Five Points Clear at the Top After Anfield Derby Win</div>
+      </div>
+    </div>
+
+    <div class="news-card">
+      <div class="news-img" style="background: linear-gradient(135deg,#2e1a1a,#1a0d0d); font-size: 2.5rem;">🇪🇸
+        <div class="news-category">La Liga</div>
+      </div>
+      <div class="news-body">
+        <div class="news-meta">Feb 23, 2026 · La Liga</div>
+        <div class="news-title">Barcelona's Yamal Sets New Record as Youngest La Liga Hat-Trick Scorer</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="also-read">
+    <h3>More Stories</h3>
+    <div class="article-list">
+      <div class="article-item">
+        <div class="article-num">01</div>
+        <div class="article-info">
+          <small>Feb 23 · Bundesliga</small>
+          <p>Bayern Munich Sack Head Coach After Worst Start in 40 Years</p>
+        </div>
+      </div>
+      <div class="article-item">
+        <div class="article-num">02</div>
+        <div class="article-info">
+          <small>Feb 23 · Serie A</small>
+          <p>Inter Milan Extend Lead at Top With Last-Minute Winner vs Napoli</p>
+        </div>
+      </div>
+      <div class="article-item">
+        <div class="article-num">03</div>
+        <div class="article-info">
+          <small>Feb 22 · International</small>
+          <p>FIFA Releases Final 2026 World Cup Schedule — All 104 Games Confirmed</p>
+        </div>
+      </div>
+      <div class="article-item">
+        <div class="article-num">04</div>
+        <div class="article-info">
+          <small>Feb 22 · Transfer News</small>
+          <p>Erling Haaland Set for Shock Summer Move to Spanish Giants, Reports Claim</p>
+        </div>
+      </div>
+      <div class="article-item">
+        <div class="article-num">05</div>
+        <div class="article-info">
+          <small>Feb 21 · Ligue 1</small>
+          <p>PSG Announce Blockbuster Summer Signing Deal Ahead of 2026-27 Season</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TEAMS -->
+<section id="teams">
+  <div class="sec-header">
+    <h2>Teams</h2>
+    <span>All Leagues</span>
+  </div>
+  <p class="teams-intro">Explore clubs from the world's top leagues. Click any team for a full squad overview.</p>
+
+  <div class="league-filter">
+    <button class="filter-btn active" onclick="filterTeams('all', this)">All</button>
+    <button class="filter-btn" onclick="filterTeams('epl', this)">Premier League</button>
+    <button class="filter-btn" onclick="filterTeams('laliga', this)">La Liga</button>
+    <button class="filter-btn" onclick="filterTeams('bundesliga', this)">Bundesliga</button>
+    <button class="filter-btn" onclick="filterTeams('seriea', this)">Serie A</button>
+  </div>
+
+  <div class="teams-grid" id="teamsGrid"></div>
+</section>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="teamModal" onclick="closeModal(event)">
+  <div class="modal" id="modalContent"></div>
+</div>
+
+<script>
+  const teams = [
+    { id:1, name:"Manchester City", league:"Premier League", leagueKey:"epl", badge:"🔵", color:"#6CABDD", founded:1880, pos:1, gd:"+42", pts:67, players:[{n:"Ederson",p:"GK"},{n:"Rúben Dias",p:"CB"},{n:"Rodri",p:"MF"},{n:"Kevin De Bruyne",p:"MF"},{n:"Erling Haaland",p:"FW"},{n:"Phil Foden",p:"FW"}] },
+    { id:2, name:"Liverpool", league:"Premier League", leagueKey:"epl", badge:"🔴", color:"#C8102E", founded:1892, pos:2, gd:"+38", pts:62, players:[{n:"Alisson",p:"GK"},{n:"Virgil van Dijk",p:"CB"},{n:"Trent Alexander-Arnold",p:"RB"},{n:"Mohamed Salah",p:"FW"},{n:"Darwin Núñez",p:"FW"},{n:"Luis Díaz",p:"FW"}] },
+    { id:3, name:"Arsenal", league:"Premier League", leagueKey:"epl", badge:"🔴", color:"#EF0107", founded:1886, pos:3, gd:"+29", pts:58, players:[{n:"David Raya",p:"GK"},{n:"Ben White",p:"RB"},{n:"William Saliba",p:"CB"},{n:"Martin Ødegaard",p:"MF"},{n:"Bukayo Saka",p:"FW"},{n:"Gabriel Martinelli",p:"FW"}] },
+    { id:4, name:"Chelsea", league:"Premier League", leagueKey:"epl", badge:"💙", color:"#034694", founded:1905, pos:6, gd:"+10", pts:44, players:[{n:"Robert Sánchez",p:"GK"},{n:"Reece James",p:"RB"},{n:"Cole Palmer",p:"MF"},{n:"Mykhailo Mudryk",p:"FW"},{n:"Nicolas Jackson",p:"FW"},{n:"Enzo Fernández",p:"MF"}] },
+    { id:5, name:"Real Madrid", league:"La Liga", leagueKey:"laliga", badge:"⚪", color:"#FEBE10", founded:1902, pos:1, gd:"+51", pts:70, players:[{n:"Thibaut Courtois",p:"GK"},{n:"Carvajal",p:"RB"},{n:"Luka Modrić",p:"MF"},{n:"Jude Bellingham",p:"MF"},{n:"Kylian Mbappé",p:"FW"},{n:"Vinicius Jr.",p:"FW"}] },
+    { id:6, name:"Barcelona", league:"La Liga", leagueKey:"laliga", badge:"🔵🔴", color:"#A50044", founded:1899, pos:2, gd:"+40", pts:65, players:[{n:"Marc-André ter Stegen",p:"GK"},{n:"Jules Koundé",p:"RB"},{n:"Ronald Araújo",p:"CB"},{n:"Pedri",p:"MF"},{n:"Lamine Yamal",p:"FW"},{n:"Robert Lewandowski",p:"FW"}] },
+    { id:7, name:"Atlético Madrid", league:"La Liga", leagueKey:"laliga", badge:"🔴⚪", color:"#CB3524", founded:1903, pos:3, gd:"+18", pts:54, players:[{n:"Jan Oblak",p:"GK"},{n:"José Giménez",p:"CB"},{n:"Koke",p:"MF"},{n:"Antoine Griezmann",p:"FW"},{n:"Álvaro Morata",p:"FW"},{n:"Samuel Lino",p:"FW"}] },
+    { id:8, name:"Bayern Munich", league:"Bundesliga", leagueKey:"bundesliga", badge:"⚽", color:"#DC052D", founded:1900, pos:1, gd:"+45", pts:68, players:[{n:"Manuel Neuer",p:"GK"},{n:"Josip Stanišić",p:"RB"},{n:"Joshua Kimmich",p:"MF"},{n:"Jamal Musiala",p:"MF"},{n:"Harry Kane",p:"FW"},{n:"Leroy Sané",p:"FW"}] },
+    { id:9, name:"Borussia Dortmund", league:"Bundesliga", leagueKey:"bundesliga", badge:"💛", color:"#FDE100", founded:1909, pos:3, gd:"+12", pts:46, players:[{n:"Gregor Kobel",p:"GK"},{n:"Nico Schlotterbeck",p:"CB"},{n:"Emre Can",p:"MF"},{n:"Giovanni Reyna",p:"MF"},{n:"Sébastien Haller",p:"FW"},{n:"Karim Adeyemi",p:"FW"}] },
+    { id:10, name:"Inter Milan", league:"Serie A", leagueKey:"seriea", badge:"⚫🔵", color:"#0068A8", founded:1908, pos:1, gd:"+37", pts:64, players:[{n:"Yann Sommer",p:"GK"},{n:"Benjamin Pavard",p:"CB"},{n:"Nicolò Barella",p:"MF"},{n:"Hakan Çalhanoğlu",p:"MF"},{n:"Lautaro Martínez",p:"FW"},{n:"Marcus Thuram",p:"FW"}] },
+    { id:11, name:"AC Milan", league:"Serie A", leagueKey:"seriea", badge:"🔴⚫", color:"#FB090B", founded:1899, pos:4, gd:"+14", pts:48, players:[{n:"Mike Maignan",p:"GK"},{n:"Davide Calabria",p:"RB"},{n:"Theo Hernández",p:"LB"},{n:"Tijjani Reijnders",p:"MF"},{n:"Christian Pulisic",p:"FW"},{n:"Rafael Leão",p:"FW"}] },
+    { id:12, name:"Juventus", league:"Serie A", leagueKey:"seriea", badge:"⚪⚫", color:"#ffffff", founded:1897, pos:5, gd:"+9", pts:45, players:[{n:"Michele Di Gregorio",p:"GK"},{n:"Danilo",p:"RB"},{n:"Gleison Bremer",p:"CB"},{n:"Manuel Locatelli",p:"MF"},{n:"Federico Chiesa",p:"FW"},{n:"Dušan Vlahović",p:"FW"}] },
+  ];
+
+  function renderTeams(filter = 'all') {
+    const grid = document.getElementById('teamsGrid');
+    const filtered = filter === 'all' ? teams : teams.filter(t => t.leagueKey === filter);
+    grid.innerHTML = filtered.map(t => `
+      <div class="team-card" style="--team-color:${t.color}" onclick="openModal(${t.id})">
+        <span class="team-badge">${t.badge}</span>
+        <div class="team-name">${t.name}</div>
+        <div class="team-league">${t.league}</div>
+        <div class="team-stats">
+          <div class="team-stat"><strong>${t.pts}</strong><small>Points</small></div>
+          <div class="team-stat"><strong>${t.pos}</strong><small>Position</small></div>
+          <div class="team-stat"><strong>${t.gd}</strong><small>GD</small></div>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  function filterTeams(key, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTeams(key);
+  }
+
+  function openModal(id) {
+    const t = teams.find(x => x.id === id);
+    document.getElementById('modalContent').innerHTML = `
+      <div class="modal-header">
+        <div class="modal-badge">${t.badge}</div>
+        <div>
+          <h2>${t.name}</h2>
+          <small>${t.league} · Founded ${t.founded}</small>
+        </div>
+        <button class="modal-close" onclick="document.getElementById('teamModal').classList.remove('open')">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-stats">
+          <div class="modal-stat"><strong>${t.pts}</strong><small>Points</small></div>
+          <div class="modal-stat"><strong>${t.pos}</strong><small>Position</small></div>
+          <div class="modal-stat"><strong>${t.gd}</strong><small>Goal Diff</small></div>
+        </div>
+        <h3>Key Players</h3>
+        <div class="player-list">
+          ${t.players.map(p=>`<div class="player-row"><span class="player-pos">${p.p}</span><span>${p.n}</span></div>`).join('')}
+        </div>
+      </div>
+    `;
+    document.getElementById('teamModal').classList.add('open');
+  }
+
+  function closeModal(e) {
+    if (e.target === document.getElementById('teamModal')) {
+      document.getElementById('teamModal').classList.remove('open');
+    }
+  }
+
+  function showSection(id, el) {
+    document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+    if (el) el.classList.add('active');
+    if (id === 'teams') renderTeams();
+  }
+
+  renderTeams();
+</script>
+</body>
+</html>
